@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.demo.payment.PaymentInfo;
@@ -22,15 +23,17 @@ public class OrderController {
     @Autowired
     private PaymentEventPublisher paymentEventPublisher;
 
-    @PostMapping(value = "/v1/order/payment")
-    public ResponseEntity pay(@RequestBody OrderPaymentRequest request) {
+    @PostMapping(value = "/v1/order/{orderId}/payment")
+    public ResponseEntity pay(@PathVariable String orderId, @RequestBody OrderPaymentRequest request) {
 
-        log.info(" ===== Star order payment , order Id : [{}] =====", request.getOrderId());
+        log.info(" ===== Star order payment , order Id : [{}] =====", orderId);
 
-        Optional<Order> orderOpt = orderRepository.findById(request.getOrderId());
+        Optional<Order> orderOpt = orderRepository.findById(orderId);
 
         if (!orderOpt.isPresent())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        log.info("Perform payment transaction ... ");
 
         Order order = orderOpt.get();
         order.setStatus("paid");
