@@ -1,4 +1,4 @@
-# sample-grpc-springboot
+# spring-event
 For learning How to use Spring events which is one of functionalities in Spring Framework
 
 **prerequisite** <br/>
